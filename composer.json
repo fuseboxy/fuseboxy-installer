@@ -1,0 +1,18 @@
+{
+	"name": "henrygotmojo/fuseboxy-installer",
+	"description": "Fuseboxy Custom Installer Plugin for Composer",
+	"type": "composer-plugin",
+	"license": "MIT",
+	"autoload": {
+		"psr-0": {"Fuseboxy\\Composer": "src/"}
+	},
+	"extra": {
+		"class": "Fuseboxy\\Composer\\Installer"
+	},
+	"require": {
+		"composer-plugin-api": "^1.0"
+	},
+	"require-dev": {
+		"composer/composer": "^1.3"
+	}
+}
