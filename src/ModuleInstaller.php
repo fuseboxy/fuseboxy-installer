@@ -1,11 +1,13 @@
 <?php
 namespace Fuseboxy\Composer;
 
+
 use Composer\Installer\InstallerInterface;
 use Composer\Package\PackageInterface;
 use Composer\Repository\InstalledRepositoryInterface;
 
-class Plugin implements InstallerInterface {
+
+class ModuleInstaller implements InstallerInterface {
 
 	public function supports($packageType) {
 
