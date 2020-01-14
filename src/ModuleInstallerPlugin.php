@@ -11,7 +11,7 @@ class ModuleInstallerPlugin implements PluginInterface {
 
 	// register custom installer for fuseboxy module
 	public function activate(Composer $composer, IOInterface $io) {
-		$installer = new _ModuleInstaller($io, $composer);
+		$installer = new ModuleInstaller($io, $composer);
 		$composer->getInstallationManager()->addInstaller($installer);
 	}
 
