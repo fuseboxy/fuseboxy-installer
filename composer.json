@@ -1,13 +1,13 @@
 {
 	"name": "henrygotmojo/fuseboxy-installer",
-	"description": "Fuseboxy Custom Installer Plugin for Composer",
+	"description": "Fuseboxy Custom Installer for Composer",
 	"type": "composer-plugin",
 	"license": "MIT",
 	"autoload": {
 		"psr-4": {"Fuseboxy\\Composer": "src/"}
 	},
 	"extra": {
-		"class": "Fuseboxy\\Composer\\ModuleInstallerPlugin"
+		"class": "Fuseboxy\\Composer\\InstallerPlugin"
 	},
 	"require": {
 		"composer-plugin-api": "^1.0"

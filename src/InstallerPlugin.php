@@ -7,11 +7,11 @@ use Composer\IO\IOInterface;
 use Composer\Plugin\PluginInterface;
 
 
-class ModuleInstallerPlugin implements PluginInterface {
+class InstallerPlugin implements PluginInterface {
 
-	// register custom installer for fuseboxy module
+	// register custom installer for fuseboxy core
 	public function activate(Composer $composer, IOInterface $io) {
-		$installer = new ModuleInstaller($io, $composer);
+		$installer = new Installer($io, $composer);
 		$composer->getInstallationManager()->addInstaller($installer);
 	}
 
