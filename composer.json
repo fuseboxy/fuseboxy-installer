@@ -4,7 +4,7 @@
 	"type": "composer-plugin",
 	"license": "MIT",
 	"autoload": {
-		"psr-0": {"Fuseboxy\\Composer": "src/"}
+		"psr-4": {"Fuseboxy\\Composer": "src/"}
 	},
 	"extra": {
 		"class": "Fuseboxy\\Composer\\ModuleInstallerPlugin"
