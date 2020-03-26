@@ -15,7 +15,7 @@ class Installer extends LibraryInstaller {
 	}
 
 	public function getInstallPath(PackageInterface $package) {
-		return 'app/';
+		return 'vendor/fuseboxy/'.$packageType.'/';
 	}
 
 }
