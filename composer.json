@@ -1,6 +1,6 @@
 {
 	"name": "fuseboxy/fuseboxy-installer",
-	"description": "Fuseboxy Custom Installer",
+	"description": "Fuseboxy Custom Installer for Composer Installation",
 	"type": "composer-plugin",
 	"license": "MIT",
 	"autoload": {
