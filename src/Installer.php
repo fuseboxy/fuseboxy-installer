@@ -40,7 +40,7 @@ class Installer extends LibraryInstaller {
 		foreach ( self::$dirToCreate as $dir ) if ( !is_dir($baseDir.$dir) ) mkdir($baseDir.$dir, 0755, true);
 		// copy selected files
 		$packageDir = $this->vendorDir.'/'.$package->getName().'/';
-		foreach ( self::$fileToCopy as $file ) copy($packageDir.$file, $baseDir.$file);
+		foreach ( self::$fileToCopy as $file ) if ( !is_file($baseDir.$file) ) copy($packageDir.$file, $baseDir.$file);
 		// only keep framework core (and remove all others)
 		foreach ( self::$fileToCopy  as $file ) unlink($packageDir.$file);
 		foreach ( self::$dirToCreate as $dir ) rmdir($packageDir.$dir);
