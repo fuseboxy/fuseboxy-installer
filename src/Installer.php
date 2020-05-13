@@ -50,9 +50,9 @@ class Installer extends LibraryInstaller {
 
 
 	// only keep framework core in vendor-path
-	public function update(InstalledRepositoryInterface $repo, PackageInterface $initial, PackageInterface $target) {
+	public function update(InstalledRepositoryInterface $repo, PackageInterface $initial, PackageInterface $package) {
 		// perform default operation
-		parent::update($repo, $initial, $target);
+		parent::update($repo, $initial, $package);
 		// only keep framework core (and remove all others)
 		$packageDir = $this->vendorDir.'/'.$package->getName().'/';
 		foreach ( self::$fileToCopy  as $file ) unlink($packageDir.$file);
