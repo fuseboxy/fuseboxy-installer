@@ -1,5 +1,4 @@
 Fuseboxy Custom Installer for Composer Installation
 ===================================================
 
-Copy <fuseboxy_config.php> and <index.php> and so to app path for first installation
-Only leave framework core under vendor directory
+CoreInstaller copies <fuseboxy_config.php, index.php, etc.> to app path at first installation, and only leaves framework core under vendor directory
