@@ -25,13 +25,13 @@ class CoreInstaller extends LibraryInstaller {
 	);
 
 
-	// only framework core needs custom handling
+	// handle framework core only
 	public function supports($packageType) {
 		return ( $packageType == 'fuseboxy-core' );
 	}
 
 
-	// copy selected files to app-path to get started
+	// copy certain resources to app-path to get started
 	public function install(InstalledRepositoryInterface $repo, PackageInterface $package) {
 		// perform default installation
 		parent::install($repo, $package);
@@ -49,7 +49,7 @@ class CoreInstaller extends LibraryInstaller {
 	}
 
 
-	// only keep framework core in vendor-path
+	// remove certain resources and only keep framework core in vendor-path
 	public function update(InstalledRepositoryInterface $repo, PackageInterface $initial, PackageInterface $target) {
 		// perform default operation
 		parent::update($repo, $initial, $target);
