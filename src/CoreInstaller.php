@@ -11,11 +11,11 @@ class CoreInstaller extends LibraryInstaller {
 
 
 	// properties
-	private static $dirToCreate = array(
+	private static $dir2create = array(
 		'app/config',
 		'app/controller',
 	);
-	private static $fileToCopy = array(
+	private static $file2copy = array(
 		'app/config/fusebox_config.php',
 		'app/controller/error_controller.php',
 		'app/controller/home_controller.php',
@@ -31,32 +31,32 @@ class CoreInstaller extends LibraryInstaller {
 	}
 
 
-	// copy selected files to app-path for first install
+	// copy selected files to app-path to get started
 	public function install(InstalledRepositoryInterface $repo, PackageInterface $package) {
 		// perform default installation
 		parent::install($repo, $package);
 		// create directories
 		$baseDir = dirname($this->vendorDir).'/';
-		foreach ( self::$dirToCreate as $dir ) if ( !is_dir($baseDir.$dir) ) mkdir($baseDir.$dir, 0755, true);
+		foreach ( self::$dir2create as $dir ) if ( !is_dir($baseDir.$dir) ) mkdir($baseDir.$dir, 0755, true);
 		// copy selected files
 		$packageDir = $this->vendorDir.'/'.$package->getName().'/';
-		foreach ( self::$fileToCopy as $file ) if ( !is_file($baseDir.$file) ) copy($packageDir.$file, $baseDir.$file);
+		foreach ( self::$file2copy as $file ) if ( !is_file($baseDir.$file) ) copy($packageDir.$file, $baseDir.$file);
 		// only keep framework core (and remove all others)
-		foreach ( self::$fileToCopy  as $file ) unlink($packageDir.$file);
-		foreach ( self::$dirToCreate as $dir ) rmdir($packageDir.$dir);
+		foreach ( self::$file2copy as $file ) unlink($packageDir.$file);
+		foreach ( self::$dir2create as $dir ) rmdir($packageDir.$dir);
 		// done!
 		return true;
 	}
 
 
 	// only keep framework core in vendor-path
-	public function update(InstalledRepositoryInterface $repo, PackageInterface $initial, PackageInterface $package) {
+	public function update(InstalledRepositoryInterface $repo, PackageInterface $initial, PackageInterface $target) {
 		// perform default operation
-		parent::update($repo, $initial, $package);
+		parent::update($repo, $initial, $target);
 		// only keep framework core (and remove all others)
-		$packageDir = $this->vendorDir.'/'.$package->getName().'/';
-		foreach ( self::$fileToCopy  as $file ) unlink($packageDir.$file);
-		foreach ( self::$dirToCreate as $dir ) rmdir($packageDir.$dir);
+		$packageDir = $this->vendorDir.'/'.$target->getName().'/';
+		foreach ( self::$file2copy as $file ) unlink($packageDir.$file);
+		foreach ( self::$dir2create as $dir ) rmdir($packageDir.$dir);
 		// done!
 		return true;
 	}
