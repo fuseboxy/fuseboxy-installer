@@ -25,7 +25,7 @@ class ModuleInstaller extends LibraryInstaller {
 		// perform default installation
 		parent::install($repo, $package);
 		// remove directory (and contents)
-		foreach ( self::$dir2remove as $dir ) rmdir($this->vendorDir.'/'.$package->getName().'/'.$dir);
+		foreach ( self::$dir2remove as $dir ) Helper::rrmdir($this->vendorDir.'/'.$package->getName().'/'.$dir);
 		// done!
 		return true;
 	}
@@ -36,7 +36,7 @@ class ModuleInstaller extends LibraryInstaller {
 		// perform default operation
 		parent::update($repo, $initial, $target);
 		// remove directory (and contents)
-		foreach ( self::$dir2remove as $dir ) rmdir($this->vendorDir.'/'.$package->getName().'/'.$dir);
+		foreach ( self::$dir2remove as $dir ) Helper::rrmdir($this->vendorDir.'/'.$package->getName().'/'.$dir);
 		// done!
 		return true;
 	}

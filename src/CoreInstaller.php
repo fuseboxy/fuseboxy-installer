@@ -47,7 +47,7 @@ class CoreInstaller extends LibraryInstaller {
 		// only keep framework core (and remove all others)
 		foreach ( self::$file2copy as $file ) unlink($packageDir.$file);
 		foreach ( self::$dir2create as $dir ) rmdir($packageDir.$dir);
-		foreach ( self::$dir2remove as $dir ) rmdir($packageDir.$dir);
+		foreach ( self::$dir2remove as $dir ) Helper::rrmdir($packageDir.$dir);
 		// done!
 		return true;
 	}
@@ -61,7 +61,7 @@ class CoreInstaller extends LibraryInstaller {
 		$packageDir = $this->vendorDir.'/'.$target->getName().'/';
 		foreach ( self::$file2copy as $file ) unlink($packageDir.$file);
 		foreach ( self::$dir2create as $dir ) rmdir($packageDir.$dir);
-		foreach ( self::$dir2remove as $dir ) rmdir($packageDir.$dir);
+		foreach ( self::$dir2remove as $dir ) Helper::rrmdir($packageDir.$dir);
 		// done!
 		return true;
 	}
