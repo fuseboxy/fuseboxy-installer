@@ -7,11 +7,11 @@ use Composer\IO\IOInterface;
 use Composer\Plugin\PluginInterface;
 
 
-class CoreInstallerPlugin implements PluginInterface {
+class InstallerPlugin implements PluginInterface {
 
 	// register custom installer
 	public function activate(Composer $composer, IOInterface $io) {
-		$installer = new xCoreInstaller($io, $composer);
+		$installer = new CoreInstaller($io, $composer);
 		$composer->getInstallationManager()->addInstaller($installer);
 	}
 
