@@ -15,4 +15,4 @@ class InstallerPlugin implements PluginInterface {
 		$composer->getInstallationManager()->addInstaller($installer);
 	}
 
-}
+} // class
