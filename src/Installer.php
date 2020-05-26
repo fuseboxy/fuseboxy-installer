@@ -43,7 +43,7 @@ class Installer extends LibraryInstaller {
 		// create directories
 		foreach ( self::$file2move[$package->getType()] as $file ) {
 			$dir = dirname($file);
-			if ( $dir != '.' ) mkdir($baseDir.$dir, 0755, true);
+			if ( $dir != '.' and !is_dir($baseDir.$dir) ) mkdir($baseDir.$dir, 0755, true);
 		}
 		// copy files
 		// ===> do not overwrite!
