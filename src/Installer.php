@@ -30,12 +30,18 @@ class Installer extends LibraryInstaller {
 
 	// handle framework core only
 	public function supports($packageType) {
-		return ( $packageType == 'fuseboxy-core' );
+		return in_array($packageType, ['fuseboxy-core']);
 	}
 
 
-	// copy certain resources to app-path to get started
 	public function install(InstalledRepositoryInterface $repo, PackageInterface $package) {
+		return $this->install__fuseboxyCore($repo, $package);
+	}
+	// copy certain resources to app-path to get started
+	private function install__fuseboxyCore(InstalledRepositoryInterface $repo, PackageInterface $package) {
+		die($package->getType().':abc-xyz');
+		return true;
+/*
 		// perform default installation
 		parent::install($repo, $package);
 		// create directories
@@ -50,6 +56,7 @@ class Installer extends LibraryInstaller {
 		foreach ( self::$dir2remove as $dir ) Helper::rrmdir($packageDir.$dir);
 		// done!
 		return true;
+*/
 	}
 
 
