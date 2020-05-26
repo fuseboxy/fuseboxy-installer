@@ -10,96 +10,66 @@ use Composer\Repository\InstalledRepositoryInterface;
 class Installer extends LibraryInstaller {
 
 
-	// properties
 	private static $dir2remove = array(
-		'.git',
-	);
-	private static $dir2create = array(
-		'app/config',
-		'app/controller',
-	);
-	private static $file2copy = array(
-		'app/config/fusebox_config.php',
-		'app/controller/error_controller.php',
-		'app/controller/home_controller.php',
-		'index.php',
-		'.htaccess',
-		'web.config',
+		'fuseboxy-core'   => ['.git'],
+		'fuseboxy-module' => ['.git'],
 	);
 
 
-	// handle framework core only
+	private static $file2move = array(
+		'fuseboxy-core' => [
+			'app/config/fusebox_config.php',
+			'app/controller/error_controller.php',
+			'app/controller/home_controller.php',
+			'.htaccess',
+			'index.php',
+			'web.config',
+		],
+		'fuseboxy-module' => [],
+	);
+
+
 	public function supports($packageType) {
 		return in_array($packageType, ['fuseboxy-core', 'fuseboxy-module']);
 	}
 
 
-	// facade method
 	public function install(InstalledRepositoryInterface $repo, PackageInterface $package) {
-		$method = 'install__'.lcfirst(implode('', array_map('ucfirst', explode('-', $package->getType()))));
-		return call_user_func([$this, $method], $repo, $package);
-	}
-
-
-	// core : copy certain resources to app-path to get started
-	private function install__fuseboxyCore(InstalledRepositoryInterface $repo, PackageInterface $package) {
 		// perform default installation
 		parent::install($repo, $package);
-		// create directories
+		// define target and source directories
 		$baseDir = dirname($this->vendorDir).'/';
-		foreach ( self::$dir2create as $dir ) if ( !is_dir($baseDir.$dir) ) mkdir($baseDir.$dir, 0755, true);
-		// copy selected files
 		$packageDir = $this->vendorDir.'/'.$package->getName().'/';
-		foreach ( self::$file2copy as $file ) if ( !is_file($baseDir.$file) ) copy($packageDir.$file, $baseDir.$file);
-		// only keep framework core (and remove all others)
-		foreach ( self::$file2copy as $file ) unlink($packageDir.$file);
-		foreach ( self::$dir2create as $dir ) rmdir($packageDir.$dir);
-		foreach ( self::$dir2remove as $dir ) Helper::rrmdir($packageDir.$dir);
+		// create directories
+		foreach ( self::$file2move[$package->getType()] as $file ) {
+			$dir = dirname($file);
+			if ( $dir != '.' ) mkdir($baseDir.$dir, 0755, true);
+		}
+		// copy files
+		// ===> do not overwrite!
+		// ===> otherwise, modified config file or customized index will be overwritten everytime composer update is run
+		foreach ( self::$file2move[$package->getType()] as $file ) {
+			if ( !is_file($baseDir.$file) ) copy($packageDir.$file, $baseDir.$file);
+		}
+		// remove copied files
+		// ===> so that only core files (but not config file) remain in vendor directory
+		foreach ( self::$file2move[$package->getType()] as $file ) rrmdir($file);
+		// remove certain directories
+		// ===> so that git will put fuseboxy stuff into repo (instead of considering them as submodules)
+		foreach ( self::$dir2remove[$package->getType()] as $dir ) rrmdir($dir);
 		// done!
 		return true;
 	}
 
 
-	// module : remove git directory after installation
-	private function install__fuseboxyModule(InstalledRepositoryInterface $repo, PackageInterface $package) {
-		// perform default installation
-		parent::install($repo, $package);
-		// remove directory (and contents)
-		foreach ( self::$dir2remove as $dir ) Helper::rrmdir($this->vendorDir.'/'.$package->getName().'/'.$dir);
-		// done!
-		return true;
-	}
-
-
-	// facade method
 	public function update(InstalledRepositoryInterface $repo, PackageInterface $initial, PackageInterface $target) {
-		$method = 'update__'.lcfirst(implode('', array_map('ucfirst', explode('-', $package->getType()))));
-		return call_user_func([$this, $method], $repo, $initial, $target);
-	}
-
-
-	// core : remove certain resources and only keep framework core in vendor-path
-	private function update__fuseboxyCore(InstalledRepositoryInterface $repo, PackageInterface $initial, PackageInterface $target) {
 		// perform default operation
 		parent::update($repo, $initial, $target);
-		// only keep framework core (and remove all others)
+		// define target directory
 		$packageDir = $this->vendorDir.'/'.$target->getName().'/';
-		foreach ( self::$file2copy as $file ) unlink($packageDir.$file);
-		foreach ( self::$dir2create as $dir ) rmdir($packageDir.$dir);
-		foreach ( self::$dir2remove as $dir ) Helper::rrmdir($packageDir.$dir);
-		// done!
-		return true;
-	}
-
-
-	// module remove git directory after update
-	private function update__fuseboxyModule(InstalledRepositoryInterface $repo, PackageInterface $initial, PackageInterface $target) {
-		// perform default operation
-		parent::update($repo, $initial, $target);
-		// remove directory (and contents)
-		foreach ( self::$dir2remove as $dir ) Helper::rrmdir($this->vendorDir.'/'.$package->getName().'/'.$dir);
-		// done!
-		return true;
+		// remove certain directories
+		// ===> so that git will put fuseboxy stuff into repo (instead of considering them as submodules)
+		foreach ( self::$dir2remove[$package->getType()] as $dir ) rrmdir($dir);
 	}
 
 
