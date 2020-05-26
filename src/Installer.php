@@ -30,18 +30,19 @@ class Installer extends LibraryInstaller {
 
 	// handle framework core only
 	public function supports($packageType) {
-		return in_array($packageType, ['fuseboxy-core']);
+		return in_array($packageType, ['fuseboxy-core', 'fuseboxy-module']);
 	}
 
 
+	// facade method
 	public function install(InstalledRepositoryInterface $repo, PackageInterface $package) {
-		return $this->install__fuseboxyCore($repo, $package);
+		$method = 'install__'.lcfirst(implode('', array_map('ucfirst', explode('-', $package->getType()))));
+		return call_user_func([$this, $method], $repo, $package);
 	}
-	// copy certain resources to app-path to get started
+
+
+	// core : copy certain resources to app-path to get started
 	private function install__fuseboxyCore(InstalledRepositoryInterface $repo, PackageInterface $package) {
-		die($package->getType().':abc-xyz');
-		return true;
-/*
 		// perform default installation
 		parent::install($repo, $package);
 		// create directories
@@ -56,12 +57,29 @@ class Installer extends LibraryInstaller {
 		foreach ( self::$dir2remove as $dir ) Helper::rrmdir($packageDir.$dir);
 		// done!
 		return true;
-*/
 	}
 
 
-	// remove certain resources and only keep framework core in vendor-path
+	// module : remove git directory after installation
+	private function install__fuseboxyModule(InstalledRepositoryInterface $repo, PackageInterface $package) {
+		// perform default installation
+		parent::install($repo, $package);
+		// remove directory (and contents)
+		foreach ( self::$dir2remove as $dir ) Helper::rrmdir($this->vendorDir.'/'.$package->getName().'/'.$dir);
+		// done!
+		return true;
+	}
+
+
+	// facade method
 	public function update(InstalledRepositoryInterface $repo, PackageInterface $initial, PackageInterface $target) {
+		$method = 'update__'.lcfirst(implode('', array_map('ucfirst', explode('-', $package->getType()))));
+		return call_user_func([$this, $method], $repo, $initial, $target);
+	}
+
+
+	// core : remove certain resources and only keep framework core in vendor-path
+	private function update__fuseboxyCore(InstalledRepositoryInterface $repo, PackageInterface $initial, PackageInterface $target) {
 		// perform default operation
 		parent::update($repo, $initial, $target);
 		// only keep framework core (and remove all others)
@@ -69,6 +87,17 @@ class Installer extends LibraryInstaller {
 		foreach ( self::$file2copy as $file ) unlink($packageDir.$file);
 		foreach ( self::$dir2create as $dir ) rmdir($packageDir.$dir);
 		foreach ( self::$dir2remove as $dir ) Helper::rrmdir($packageDir.$dir);
+		// done!
+		return true;
+	}
+
+
+	// module remove git directory after update
+	private function update__fuseboxyModule(InstalledRepositoryInterface $repo, PackageInterface $initial, PackageInterface $target) {
+		// perform default operation
+		parent::update($repo, $initial, $target);
+		// remove directory (and contents)
+		foreach ( self::$dir2remove as $dir ) Helper::rrmdir($this->vendorDir.'/'.$package->getName().'/'.$dir);
 		// done!
 		return true;
 	}
