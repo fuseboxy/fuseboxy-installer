@@ -11,7 +11,7 @@ class CoreInstallerPlugin implements PluginInterface {
 
 	// register custom installer
 	public function activate(Composer $composer, IOInterface $io) {
-		$installer = new CoreInstaller($io, $composer);
+		$installer = new xCoreInstaller($io, $composer);
 		$composer->getInstallationManager()->addInstaller($installer);
 	}
 
