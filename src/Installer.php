@@ -7,7 +7,7 @@ use Composer\Package\PackageInterface;
 use Composer\Repository\InstalledRepositoryInterface;
 
 
-class CoreInstaller extends LibraryInstaller {
+class Installer extends LibraryInstaller {
 
 
 	// properties
