@@ -53,10 +53,10 @@ class Installer extends LibraryInstaller {
 		}
 		// remove copied files
 		// ===> so that only core files (but not config file) remain in vendor directory
-		foreach ( self::$file2move[$package->getType()] as $file ) Helper::rrmdir($file);
+		foreach ( self::$file2move[$package->getType()] as $file ) Helper::rrmdir($packageDir.$file);
 		// remove certain directories
 		// ===> so that git will put fuseboxy stuff into repo (instead of considering them as submodules)
-		foreach ( self::$dir2remove[$package->getType()] as $dir ) Helper::rrmdir($dir);
+		foreach ( self::$dir2remove[$package->getType()] as $dir ) Helper::rrmdir($packageDir.$dir);
 		// done!
 		return true;
 	}
@@ -69,7 +69,7 @@ class Installer extends LibraryInstaller {
 		$packageDir = $this->vendorDir.'/'.$target->getName().'/';
 		// remove certain directories
 		// ===> so that git will put fuseboxy stuff into repo (instead of considering them as submodules)
-		foreach ( self::$dir2remove[$package->getType()] as $dir ) Helper::rrmdir($dir);
+		foreach ( self::$dir2remove[$package->getType()] as $dir ) Helper::rrmdir($packageDir.$dir);
 	}
 
 
