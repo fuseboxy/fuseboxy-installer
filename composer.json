@@ -7,7 +7,7 @@
 		"psr-4": {"Fuseboxy\\Composer\\": "src/"}
 	},
 	"extra": {
-		"class": "Fuseboxy\\Composer\\CoreInstallerPlugin"
+		"class": "Fuseboxy\\Composer\\InstallerPlugin"
 	},
 	"require": {
 		"composer-plugin-api": "^1.0"
