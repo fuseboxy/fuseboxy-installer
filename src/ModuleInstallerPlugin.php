@@ -11,7 +11,7 @@ class ModuleInstallerPlugin implements PluginInterface {
 
 	// register custom installer
 	public function activate(Composer $composer, IOInterface $io) {
-		$installer = new xModuleInstaller($io, $composer);
+		$installer = new ModuleInstaller($io, $composer);
 		$composer->getInstallationManager()->addInstaller($installer);
 	}
 
