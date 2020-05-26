@@ -8,7 +8,7 @@ class Helper {
 	public static function rrmdir($dir) {
 		if ( is_dir($dir) ) {
 			$objects = scandir($dir);
-			foreach ( $objects as $obj ) if ( !in_array($obj, ['.','..']) ) rrmdir($dir.'/'.$obj);
+			foreach ( $objects as $obj ) if ( !in_array($obj, ['.','..']) ) self::rrmdir($dir.'/'.$obj);
 			rmdir($dir);
 		} elseif ( is_file($dir) or is_link($dir) ) {
 			unlink($dir);
