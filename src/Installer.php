@@ -69,7 +69,9 @@ class Installer extends LibraryInstaller {
 		$packageDir = $this->vendorDir.'/'.$target->getName().'/';
 		// remove certain directories
 		// ===> so that git will put fuseboxy stuff into repo (instead of considering them as submodules)
-		foreach ( self::$dir2remove[$package->getType()] as $dir ) Helper::rrmdir($packageDir.$dir);
+		foreach ( self::$dir2remove[$target->getType()] as $dir ) Helper::rrmdir($packageDir.$dir);
+		// done!
+		return true;
 	}
 
 
