@@ -10,27 +10,18 @@ use Composer\Repository\InstalledRepositoryInterface;
 class Installer extends LibraryInstaller {
 
 
-	private static $dir2remove = array(
-		'fuseboxy-core'   => ['.git'],
-		'fuseboxy-module' => ['.git'],
-	);
-
-
 	private static $file2move = array(
-		'fuseboxy-core' => [
-			'app/config/fusebox_config.php',
-			'app/controller/error_controller.php',
-			'app/controller/home_controller.php',
-			'.htaccess',
-			'index.php',
-			'web.config',
-		],
-		'fuseboxy-module' => [],
+		'app/config/fusebox_config.php',
+		'app/controller/error_controller.php',
+		'app/controller/home_controller.php',
+		'.htaccess',
+		'index.php',
+		'web.config',
 	);
 
 
 	public function supports($packageType) {
-		return in_array($packageType, ['fuseboxy-core', 'fuseboxy-module']);
+		return ( $packageType == 'fuseboxy-core' );
 	}
 
 
@@ -54,9 +45,6 @@ class Installer extends LibraryInstaller {
 		// remove copied files
 		// ===> so that only core files (but not config file) remain in vendor directory
 		foreach ( self::$file2move[$package->getType()] as $file ) Helper::rrmdir($packageDir.$file);
-		// remove certain directories
-		// ===> so that git will put fuseboxy stuff into repo (instead of considering them as submodules)
-		foreach ( self::$dir2remove[$package->getType()] as $dir ) Helper::rrmdir($packageDir.$dir);
 		// done!
 		return true;
 	}
@@ -67,9 +55,6 @@ class Installer extends LibraryInstaller {
 		parent::update($repo, $initial, $target);
 		// define target directory
 		$packageDir = $this->vendorDir.'/'.$target->getName().'/';
-		// remove certain directories
-		// ===> so that git will put fuseboxy stuff into repo (instead of considering them as submodules)
-		foreach ( self::$dir2remove[$target->getType()] as $dir ) Helper::rrmdir($packageDir.$dir);
 		// done!
 		return true;
 	}
