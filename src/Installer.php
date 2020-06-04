@@ -67,7 +67,7 @@ class Installer extends LibraryInstaller {
 		$packageDir = $this->vendorDir.'/'.$target->getName().'/';
 		// remove files that already copied in installation
 		// ===> so that only core files (but not config file) remain in vendor directory
-		foreach ( self::$file2move[$package->getType()] as $file ) Helper::rrmdir($packageDir.$file);
+		foreach ( self::$file2move[$target->getType()] as $file ) Helper::rrmdir($packageDir.$file);
 		// remove certain directories
 		// ===> so that git will put fuseboxy stuff into repo (instead of considering them as submodules)
 		foreach ( self::$dir2remove[$target->getType()] as $dir ) Helper::rrmdir($packageDir.$dir);
