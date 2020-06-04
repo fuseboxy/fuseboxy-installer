@@ -48,9 +48,7 @@ class Installer extends LibraryInstaller {
 		// copy files
 		// ===> do not overwrite!
 		// ===> otherwise, modified config file or customized index will be overwritten everytime composer update is run
-		foreach ( self::$file2move[$package->getType()] as $file ) {
-			if ( !is_file($baseDir.$file) ) copy($packageDir.$file, $baseDir.$file);
-		}
+		foreach ( self::$file2move[$package->getType()] as $file ) if ( !is_file($baseDir.$file) ) copy($packageDir.$file, $baseDir.$file);
 		// remove copied files
 		// ===> so that only core files (but not config file) remain in vendor directory
 		foreach ( self::$file2move[$package->getType()] as $file ) Helper::rrmdir($packageDir.$file);
@@ -68,6 +66,7 @@ class Installer extends LibraryInstaller {
 		// define target directory
 		$packageDir = $this->vendorDir.'/'.$target->getName().'/';
 		// remove files that already copied in installation
+		// ===> so that only core files (but not config file) remain in vendor directory
 		foreach ( self::$file2move[$package->getType()] as $file ) Helper::rrmdir($packageDir.$file);
 		// remove certain directories
 		// ===> so that git will put fuseboxy stuff into repo (instead of considering them as submodules)
