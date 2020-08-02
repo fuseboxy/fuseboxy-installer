@@ -23,7 +23,6 @@ class Installer extends LibraryInstaller {
 			'app/controller/home_controller.php',
 			'.htaccess',
 			'index.php',
-			'web.config',
 		],
 		'fuseboxy-module' => [],
 	);
