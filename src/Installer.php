@@ -11,8 +11,8 @@ class Installer extends LibraryInstaller {
 
 
 	private static $dir2remove = array(
-		'fuseboxy-core'   => [],
-		'fuseboxy-module' => [],
+		'fuseboxy-core'   => ['.git'],
+		'fuseboxy-module' => ['.git'],
 	);
 
 
