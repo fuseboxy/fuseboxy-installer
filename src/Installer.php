@@ -17,12 +17,18 @@ class Installer extends LibraryInstaller {
 
 	// list of files to copy after install (only)
 	private static $file2copy = array(
+		'fuseboxy/fuseboxy-auth' => [
+			'app/view/auth/layout.settings.php-default' => 'app/view/auth/layout.settings.php',
+		],
 		'fuseboxy/fuseboxy-core' => [
 			'app/config/fusebox_config.php',
 			'app/controller/error_controller.php',
 			'app/controller/home_controller.php',
 			'.htaccess',
 			'index.php',
+		],
+		'fuseboxy/fuseboxy-layout' => [
+			'app/view/global/layout.settings.php-default' => 'app/view/global/layout.settings.php',
 		],
 	);
 
