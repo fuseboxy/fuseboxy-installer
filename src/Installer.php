@@ -11,6 +11,7 @@ class Installer extends LibraryInstaller {
 
 
 	// list of directories to remove after install or update
+	// ===> so that git will track fuseboxy stuff (instead of considering them as submodules)
 	private static $dir2remove = array( '*' => ['.git'] );
 
 
@@ -28,7 +29,7 @@ class Installer extends LibraryInstaller {
 
 	// list of files to remove after install or update
 	private static $file2remove = array(
-		'fuseboxy-core' => [
+		'fuseboxy/fuseboxy-core' => [
 			'app/config/fusebox_config.php',
 			'app/controller/error_controller.php',
 			'app/controller/home_controller.php',
@@ -57,10 +58,10 @@ class Installer extends LibraryInstaller {
 	}
 
 
-	// proceed to copy files (according to package)
-	public function copyFile($vendorDir, $packageName) {
-		$baseDir = dirname($vendorDir).'/';
-		$packageDir = $vendorDir.'/'.$packageName.'/';
+	// proceed custom operation to copy files
+	public function customCopyFile($packageName) {
+		$baseDir = dirname($this->vendorDir).'/';
+		$packageDir = $this->vendorDir.'/'.$packageName.'/';
 		// obtain file list
 		if ( isset(self::$file2copy['*']) ) $file2copy = self::$file2copy['*'];
 		elseif ( isset(self::$file2copy[$packageName]) ) $file2copy = self::$file2copy[$packageName];
@@ -81,30 +82,55 @@ class Installer extends LibraryInstaller {
 	}
 
 
+	// proceed custom operation to remove files
+	public function customRemoveFile($packageName) {
+		$baseDir = dirname($this->vendorDir).'/';
+		$packageDir = $this->vendorDir.'/'.$packageName.'/';
+		// obtain file list
+		if ( isset(self::$file2remove['*']) ) $file2remove = self::$file2remove['*'];
+		elseif ( isset(self::$file2remove[$packageName]) ) $file2remove = self::$file2remove[$packageName];
+		else $file2remove = [];
+		// go through each specified file
+		foreach ( $file2remove as $file ) {
+			// remove specified file
+			unlink($packageDir.$file);
+			// also remove each parent directory (when empty)
+			// ===> so that only core files (but not config file) remain in vendor directory
+			$dir = dirname($file);
+			while ( !empty($dir) and $dir != '.' ) {
+				if ( empty(glob($packageDir.$dir.'/*')) ) rmdir($packageDir.$dir);
+				$dir = dirname($dir);
+			}
+		}
+		// done!
+		return true;
+	}
+
+
+	// proceed custom operation to remove directory (and content)
+	public function customRemoveDir($packageName) {
+		$baseDir = dirname($this->vendorDir).'/';
+		$packageDir = $this->vendorDir.'/'.$packageName.'/';
+		// obtain directory list
+		if ( isset(self::$dir2remove['*']) ) $dir2remove = self::$dir2remove['*'];
+		elseif ( isset(self::$dir2remove[$packageName]) ) $dir2remove = self::$dir2remove[$packageName];
+		else $dir2remove = [];
+		// remove certain directories
+		foreach ( $dir2remove as $dir ) Helper::rrmdir($packageDir.$dir);
+		// done!
+		return true;
+	}
+
+
 	// perform default install-operatoin of composer
 	// ===> then perform custom install-operation of fuseboxy
 	public function install(InstalledRepositoryInterface $repo, PackageInterface $package) {
 		parent::install($repo, $package);
-		// define target and source directories
-		$baseDir = dirname($this->vendorDir).'/';
-		$packageDir = $this->vendorDir.'/'.$package->getName().'/';
-		// further adjust package location (when necessary)
+		// further adjust package location
 		if ( !$this->isUnitTest() ) {
-			$this->copyFile($this->vendorDir, $package->getName());
-			// remove copied files
-			// ===> also remove each parent directory (when empty)
-			// ===> so that only core files (but not config file) remain in vendor directory
-			foreach ( self::$file2remove[$package->getType()] as $file ) {
-				unlink($packageDir.$file);
-				$dir = dirname($file);
-				while ( !empty($dir) and $dir != '.' ) {
-					if ( empty(glob($packageDir.$dir.'/*')) ) rmdir($packageDir.$dir);
-					$dir = dirname($dir);
-				}
-			}
-			// remove certain directories
-			// ===> so that git will put fuseboxy stuff into repo (instead of considering them as submodules)
-			foreach ( self::$dir2remove[$package->getType()] as $dir ) Helper::rrmdir($packageDir.$dir);
+			$this->customCopyFile($package->getName());
+			$this->customRemoveFile($package->getName());
+			$this->customRemoveDir($package->getName());
 		}
 		// done!
 		return true;
@@ -115,26 +141,11 @@ class Installer extends LibraryInstaller {
 	// ===> then perform custom update-operation of fuseboxy
 	public function update(InstalledRepositoryInterface $repo, PackageInterface $initial, PackageInterface $target) {
 		parent::update($repo, $initial, $target);
-		// define target directory
-		$packageName = $target->getName();
-		$packageDir = $this->vendorDir.'/'.$packageName.'/';
-		// further adjust package location (when necessary)
+		// further adjust package location
 		if ( !$this->isUnitTest() ) {
-			// remove files that already copied
-			// ===> (no need to copy files again in package update)
-			// ===> also remove each parent directory (when empty)
-			// ===> so that only core files (but not config file) remain in vendor directory
-			foreach ( self::$file2remove[$target->getType()] as $file ) {
-				unlink($packageDir.$file);
-				$dir = dirname($file);
-				while ( !empty($dir) and $dir != '.' ) {
-					if ( empty(glob($packageDir.$dir.'/*')) ) rmdir($packageDir.$dir);
-					$dir = dirname($dir);
-				}
-			}
-			// remove certain directories
-			// ===> so that git will put fuseboxy stuff into repo (instead of considering them as submodules)
-			foreach ( self::$dir2remove[$target->getType()] as $dir ) Helper::rrmdir($packageDir.$dir);
+			// (no need to copy file agains when package update)
+			$this->customRemoveFile($target->getName());
+			$this->customRemoveDir($target->getName());
 		}
 		// done!
 		return true;
