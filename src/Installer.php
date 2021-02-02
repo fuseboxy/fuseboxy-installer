@@ -11,15 +11,12 @@ class Installer extends LibraryInstaller {
 
 
 	// list of directories to remove after install or update
-	private static $dir2remove = array(
-		'fuseboxy-core'   => ['.git'],
-		'fuseboxy-module' => ['.git'],
-	);
+	private static $dir2remove = array( '*' => ['.git'] );
 
 
 	// list of files to copy after install (only)
 	private static $file2copy = array(
-		'fuseboxy-core' => [
+		'fuseboxy/fuseboxy-core' => [
 			'app/config/fusebox_config.php',
 			'app/controller/error_controller.php',
 			'app/controller/home_controller.php',
@@ -60,6 +57,30 @@ class Installer extends LibraryInstaller {
 	}
 
 
+	// proceed to copy files (according to package)
+	public function copyFile($vendorDir, $packageName) {
+		$baseDir = dirname($vendorDir).'/';
+		$packageDir = $vendorDir.'/'.$packageName.'/';
+		// obtain file list
+		if ( isset(self::$file2copy['*']) ) $file2copy = self::$file2copy['*'];
+		elseif ( isset(self::$file2copy[$packageName]) ) $file2copy = self::$file2copy[$packageName];
+		else $file2copy = [];
+		// go through each specified file
+		foreach ( $file2copy as $src => $dst ) {
+			if ( is_numeric($src) ) $src = $dst;
+			// create directory (when necessary)
+			$dir = dirname($dst);
+			if ( $dir != '.' and !is_dir($baseDir.$dir) ) mkdir($baseDir.$dir, 0755, true);
+			// copy file (when necessary)
+			// ===> do not overwrite!
+			// ===> otherwise, modified config file or customized index will be overwritten everytime composer update is run...
+			if ( is_file($packageDir.$src) and !is_file($baseDir.$dst) ) copy($packageDir.$src, $baseDir.$dst);
+		}
+		// done!
+		return true;
+	}
+
+
 	// perform default install-operatoin of composer
 	// ===> then perform custom install-operation of fuseboxy
 	public function install(InstalledRepositoryInterface $repo, PackageInterface $package) {
@@ -69,18 +90,7 @@ class Installer extends LibraryInstaller {
 		$packageDir = $this->vendorDir.'/'.$package->getName().'/';
 		// further adjust package location (when necessary)
 		if ( !$this->isUnitTest() ) {
-			// create directories
-			foreach ( self::$file2copy[$package->getType()] as $src => $dst ) {
-				$dir = dirname($dst);
-				if ( $dir != '.' and !is_dir($baseDir.$dir) ) mkdir($baseDir.$dir, 0755, true);
-			}
-			// copy files
-			// ===> do not overwrite!
-			// ===> otherwise, modified config file or customized index will be overwritten everytime composer update is run
-			foreach ( self::$file2copy[$package->getType()] as $src => $dst ) {
-				if ( is_numeric($src) ) $src = $dst;
-				if ( is_file($packageDir.$src) and !is_file($baseDir.$dst) ) copy($packageDir.$src, $baseDir.$dst);
-			}
+			$this->copyFile($this->vendorDir, $package->getName());
 			// remove copied files
 			// ===> also remove each parent directory (when empty)
 			// ===> so that only core files (but not config file) remain in vendor directory
@@ -106,7 +116,8 @@ class Installer extends LibraryInstaller {
 	public function update(InstalledRepositoryInterface $repo, PackageInterface $initial, PackageInterface $target) {
 		parent::update($repo, $initial, $target);
 		// define target directory
-		$packageDir = $this->vendorDir.'/'.$target->getName().'/';
+		$packageName = $target->getName();
+		$packageDir = $this->vendorDir.'/'.$packageName.'/';
 		// further adjust package location (when necessary)
 		if ( !$this->isUnitTest() ) {
 			// remove files that already copied
