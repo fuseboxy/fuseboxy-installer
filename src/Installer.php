@@ -1,7 +1,5 @@
 <?php
 namespace Fuseboxy\Composer;
-
-
 use Composer\Installer\LibraryInstaller;
 use Composer\Package\PackageInterface;
 use Composer\Repository\InstalledRepositoryInterface;
@@ -14,8 +12,6 @@ class Installer extends LibraryInstaller {
 		'fuseboxy-core'   => ['.git'],
 		'fuseboxy-module' => ['.git'],
 	);
-
-
 	private static $file2copy = array(
 		'fuseboxy-core' => [
 			'app/config/fusebox_config.php',
@@ -25,8 +21,6 @@ class Installer extends LibraryInstaller {
 			'index.php',
 		],
 	);
-
-
 	private static $file2remove = array(
 		'fuseboxy-core' => [
 			'app/config/fusebox_config.php',
@@ -39,10 +33,14 @@ class Installer extends LibraryInstaller {
 
 
 	private function isUnitTest() {
+		// parse composer file
 		$filePath = dirname($this->vendorDir).'/composer.json';
 		$json = json_decode(file_get_contents($filePath), true);
 		if ( $json === false ) return false;
-		return ( isset($json['name']) and $json['name'] == 'fuseboxy/fuseboxy-test' );
+		// extract package name
+		$packageName = isset($json['name']) ? $json['name'] : '';
+		// done!
+		return ( $packageName == 'fuseboxy/fuseboxy-test' );
 	}
 
 
