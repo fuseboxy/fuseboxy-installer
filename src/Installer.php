@@ -20,7 +20,7 @@ class Installer extends LibraryInstaller {
 	// list of files to copy after install (only)
 	private static $file2copy = array(
 		'fuseboxy-core' => [
-			'app/config/fusebox_config.php' => 'app/config/fuseboxy_config.xxx',
+			'app/config/fusebox_config.php',
 			'app/controller/error_controller.php',
 			'app/controller/home_controller.php',
 			'.htaccess',
@@ -82,8 +82,16 @@ class Installer extends LibraryInstaller {
 				if ( is_file($packageDir.$src) and !is_file($baseDir.$dst) ) copy($packageDir.$src, $baseDir.$dst);
 			}
 			// remove copied files
+			// ===> also remove each parent directory (when empty)
 			// ===> so that only core files (but not config file) remain in vendor directory
-			foreach ( self::$file2remove[$package->getType()] as $file ) Helper::rrmdir($packageDir.$file);
+			foreach ( self::$file2remove[$package->getType()] as $file ) {
+				unlink($packageDir.$file);
+				$dir = dirname($file);
+				while ( !empty($dir) and $dir != '.' ) {
+					if ( empty(glob($packageDir.$dir.'/*')) ) rmdir($packageDir.$dir);
+					$dir = dirname($dir);
+				}
+			}
 			// remove certain directories
 			// ===> so that git will put fuseboxy stuff into repo (instead of considering them as submodules)
 			foreach ( self::$dir2remove[$package->getType()] as $dir ) Helper::rrmdir($packageDir.$dir);
@@ -103,8 +111,16 @@ class Installer extends LibraryInstaller {
 		if ( !$this->isUnitTest() ) {
 			// remove files that already copied
 			// ===> (no need to copy files again in package update)
+			// ===> also remove each parent directory (when empty)
 			// ===> so that only core files (but not config file) remain in vendor directory
-			foreach ( self::$file2remove[$target->getType()] as $file ) Helper::rrmdir($packageDir.$file);
+			foreach ( self::$file2remove[$target->getType()] as $file ) {
+				unlink($packageDir.$file);
+				$dir = dirname($file);
+				while ( !empty($dir) and $dir != '.' ) {
+					if ( empty(glob($packageDir.$dir.'/*')) ) rmdir($packageDir.$dir);
+					$dir = dirname($dir);
+				}
+			}
 			// remove certain directories
 			// ===> so that git will put fuseboxy stuff into repo (instead of considering them as submodules)
 			foreach ( self::$dir2remove[$target->getType()] as $dir ) Helper::rrmdir($packageDir.$dir);
