@@ -14,7 +14,7 @@ class Installer extends LibraryInstaller {
 	);
 	private static $file2copy = array(
 		'fuseboxy-core' => [
-			'app/config/fusebox_config.php',
+			'app/config/fusebox_config.php' => 'app/config/fuseboxy_config.xxx',
 			'app/controller/error_controller.php',
 			'app/controller/home_controller.php',
 			'.htaccess',
@@ -58,14 +58,17 @@ class Installer extends LibraryInstaller {
 		// further adjust package location (when necessary)
 		if ( !$this->isUnitTest() ) {
 			// create directories
-			foreach ( self::$file2copy[$package->getType()] as $file ) {
-				$dir = dirname($file);
+			foreach ( self::$file2copy[$package->getType()] as $src => $dst ) {
+				$dir = dirname($dst);
 				if ( $dir != '.' and !is_dir($baseDir.$dir) ) mkdir($baseDir.$dir, 0755, true);
 			}
 			// copy files
 			// ===> do not overwrite!
 			// ===> otherwise, modified config file or customized index will be overwritten everytime composer update is run
-			foreach ( self::$file2copy[$package->getType()] as $file ) if ( !is_file($baseDir.$file) ) copy($packageDir.$file, $baseDir.$file);
+			foreach ( self::$file2copy[$package->getType()] as $src => $dst ) {
+				if ( is_numeric($src) ) $src = $dst;
+				if ( is_file($packageDir.$src) and !is_file($baseDir.$dst) ) copy($packageDir.$src, $baseDir.$dst);
+			}
 			// remove copied files
 			// ===> so that only core files (but not config file) remain in vendor directory
 			foreach ( self::$file2remove[$package->getType()] as $file ) Helper::rrmdir($packageDir.$file);
