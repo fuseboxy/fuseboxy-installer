@@ -5,13 +5,19 @@ use Composer\Package\PackageInterface;
 use Composer\Repository\InstalledRepositoryInterface;
 
 
+
+// custom installer for fuseboxy
 class Installer extends LibraryInstaller {
 
 
+	// list of directories to remove after install or update
 	private static $dir2remove = array(
 		'fuseboxy-core'   => ['.git'],
 		'fuseboxy-module' => ['.git'],
 	);
+
+
+	// list of files to copy after install (only)
 	private static $file2copy = array(
 		'fuseboxy-core' => [
 			'app/config/fusebox_config.php' => 'app/config/fuseboxy_config.xxx',
@@ -21,6 +27,9 @@ class Installer extends LibraryInstaller {
 			'index.php',
 		],
 	);
+
+
+	// list of files to remove after install or update
 	private static $file2remove = array(
 		'fuseboxy-core' => [
 			'app/config/fusebox_config.php',
@@ -32,6 +41,7 @@ class Installer extends LibraryInstaller {
 	);
 
 
+	// check whether this installer is invoked by unit test
 	private function isUnitTest() {
 		// parse composer file
 		$filePath = dirname($this->vendorDir).'/composer.json';
@@ -44,13 +54,15 @@ class Installer extends LibraryInstaller {
 	}
 
 
+	// check whether to run this installer (according to package type)
 	public function supports($packageType) {
 		return in_array($packageType, ['fuseboxy-core', 'fuseboxy-module']);
 	}
 
 
+	// perform default install-operatoin of composer
+	// ===> then perform custom install-operation of fuseboxy
 	public function install(InstalledRepositoryInterface $repo, PackageInterface $package) {
-		// perform default installation
 		parent::install($repo, $package);
 		// define target and source directories
 		$baseDir = dirname($this->vendorDir).'/';
@@ -81,8 +93,9 @@ class Installer extends LibraryInstaller {
 	}
 
 
+	// perform default update-operation of composer
+	// ===> then perform custom update-operation of fuseboxy
 	public function update(InstalledRepositoryInterface $repo, PackageInterface $initial, PackageInterface $target) {
-		// perform default operation
 		parent::update($repo, $initial, $target);
 		// define target directory
 		$packageDir = $this->vendorDir.'/'.$target->getName().'/';
