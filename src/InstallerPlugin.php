@@ -1,7 +1,5 @@
 <?php
 namespace Fuseboxy\Composer;
-
-
 use Composer\Composer;
 use Composer\IO\IOInterface;
 use Composer\Plugin\PluginInterface;
