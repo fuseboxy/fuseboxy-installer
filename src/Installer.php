@@ -25,10 +25,10 @@ class Installer extends LibraryInstaller {
 			'app/controller/error_controller.php',
 			'app/controller/home_controller.php',
 			'.htaccess',
-			'_env.php',
 			'_env.php' => '_env.php.EMPTY',
 			'_env.php' => '_env.php.UAT',
 			'_env.php' => '_env.php.PRD',
+			'_env.php',
 			'index.php',
 		],
 		'fuseboxy/fuseboxy-layout' => [
