@@ -104,7 +104,7 @@ class Installer extends LibraryInstaller {
 		// go through each specified file
 		foreach ( $file2remove as $file ) {
 			// remove specified file
-			unlink($packageDir.$file);
+			if ( is_file($packageDir.$file) ) unlink($packageDir.$file);
 			// also remove each parent directory (when empty)
 			// ===> so that only core files (but not config file) remain in vendor directory
 			$dir = dirname($file);
