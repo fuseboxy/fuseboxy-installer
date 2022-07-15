@@ -5,7 +5,6 @@ use Composer\Package\PackageInterface;
 use Composer\Repository\InstalledRepositoryInterface;
 
 
-
 // custom installer for fuseboxy
 class Installer extends LibraryInstaller {
 
@@ -59,7 +58,7 @@ class Installer extends LibraryInstaller {
 		// extract package name
 		$packageName = isset($json['name']) ? $json['name'] : '';
 		// done!
-		return ( $packageName == 'fuseboxy/fuseboxy-test' );
+		return ( $packageName == 'fuseboxy/fuseboxy-autotest' );
 	}
 
 
@@ -137,12 +136,12 @@ class Installer extends LibraryInstaller {
 	// ===> then perform custom install-operation of fuseboxy
 	public function install(InstalledRepositoryInterface $repo, PackageInterface $package) {
 		parent::install($repo, $package);
+		// simply quit when unit test
+		if ( $this->isUnitTest() ) return false;
 		// further adjust package location
-		if ( !$this->isUnitTest() ) {
-			$this->customCopyFile($package->getName());
-			$this->customRemoveFile($package->getName());
-			$this->customRemoveDir($package->getName());
-		}
+		$this->customCopyFile($package->getName());
+		$this->customRemoveFile($package->getName());
+		$this->customRemoveDir($package->getName());
 		// done!
 		return true;
 	}
@@ -152,12 +151,13 @@ class Installer extends LibraryInstaller {
 	// ===> then perform custom update-operation of fuseboxy
 	public function update(InstalledRepositoryInterface $repo, PackageInterface $initial, PackageInterface $target) {
 		parent::update($repo, $initial, $target);
+		// simply quit when unit test
+		if ( $this->isUnitTest() ) return false;
 		// further adjust package location
-		if ( !$this->isUnitTest() ) {
-			// (no need to copy file agains when package update)
-			$this->customRemoveFile($target->getName());
-			$this->customRemoveDir($target->getName());
-		}
+		// ===> no need to copy file when package update
+		// ===> to avoid overwriting modified settings file
+		$this->customRemoveFile($target->getName());
+		$this->customRemoveDir($target->getName());
 		// done!
 		return true;
 	}
