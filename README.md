@@ -1,4 +1,25 @@
-Fuseboxy Custom Installer for Composer Installation
-===================================================
+FUSEBOXY INSTALLER (2.2.x)
+==========================
 
-CoreInstaller copies <fuseboxy_config.php, index.php, etc.> to app path at first installation, and only leaves framework core under vendor directory
+## Usage
+
+Custom Installer for Composer Installation
+
+`Installer.php` copies the following files to app folder:
+
+*  fuseboxy-core
+   *  fusebox_config.php
+   *  error_controller.php
+   *  home_controller.php
+   *  .htaccess
+   *  _env.php
+   *  index.php
+*  fuseboxy-auth
+   *  layout.settings.php
+*  fuseboxy-layout
+   *  layout.settings.php
+
+
+## Dependency
+
+Work with composer version `2.2.x`
