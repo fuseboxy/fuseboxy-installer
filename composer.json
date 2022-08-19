@@ -10,9 +10,9 @@
 		"class": "Fuseboxy\\Composer\\InstallerPlugin"
 	},
 	"require": {
-		"composer-plugin-api": "^2.0"
+		"composer-plugin-api": "2.2.x"
 	},
 	"require-dev": {
-		"composer/composer": "^2.0"
+		"composer/composer": "2.2.x"
 	}
 }
