@@ -108,7 +108,7 @@ class Installer extends LibraryInstaller {
 			// ===> so that only core files (but not config file) remain in vendor directory
 			$dir = dirname($file);
 			while ( !empty($dir) and $dir != '.' ) {
-				if ( empty(glob($packageDir.$dir.'/*')) ) rmdir($packageDir.$dir);
+				if ( empty(glob($packageDir.$dir.'/*')) and is_dir($packageDir.$dir) ) rmdir($packageDir.$dir);
 				$dir = dirname($dir);
 			}
 		}
