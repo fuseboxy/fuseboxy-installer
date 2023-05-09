@@ -121,7 +121,6 @@ class Installer extends LibraryInstaller {
 		// further adjust package location
 		$this->customCopyFile($package->getName());
 		$this->customRemoveFile($package->getName());
-		$this->customRemoveDir($package->getName());
 		// done!
 		return true;
 	}
@@ -137,7 +136,6 @@ class Installer extends LibraryInstaller {
 		// ===> no need to copy file when package update
 		// ===> to avoid overwriting modified settings file
 		$this->customRemoveFile($target->getName());
-		$this->customRemoveDir($target->getName());
 		// done!
 		return true;
 	}
