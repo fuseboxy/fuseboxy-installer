@@ -9,11 +9,6 @@ use Composer\Repository\InstalledRepositoryInterface;
 class Installer extends LibraryInstaller {
 
 
-	// list of directories to remove after install or update
-	// ===> so that git will track fuseboxy stuff (instead of considering them as submodules)
-	private static $dir2remove = array( '*' => ['.git'] );
-
-
 	// list of files to copy after install (only)
 	private static $file2copy = array(
 		'fuseboxy/fuseboxy-auth' => [
@@ -117,22 +112,7 @@ class Installer extends LibraryInstaller {
 	}
 
 
-	// proceed custom operation to remove directory (and content)
-	public function customRemoveDir($packageName) {
-		$baseDir = dirname($this->vendorDir).'/';
-		$packageDir = $this->vendorDir.'/'.$packageName.'/';
-		// obtain directory list
-		if ( isset(self::$dir2remove['*']) ) $dir2remove = self::$dir2remove['*'];
-		elseif ( isset(self::$dir2remove[$packageName]) ) $dir2remove = self::$dir2remove[$packageName];
-		else $dir2remove = [];
-		// remove certain directories
-		foreach ( $dir2remove as $dir ) Helper::rrmdir($packageDir.$dir);
-		// done!
-		return true;
-	}
-
-
-	// perform default install-operatoin of composer
+	// perform default install-operation of composer
 	// ===> then perform custom install-operation of fuseboxy
 	public function install(InstalledRepositoryInterface $repo, PackageInterface $package) {
 		parent::install($repo, $package);
