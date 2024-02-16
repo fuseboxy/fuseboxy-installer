@@ -1,9 +1,9 @@
-FUSEBOXY INSTALLER (1.x)
+FUSEBOXY INSTALLER (2.x)
 ========================
 
 ## Dependency
 
-Work with composer version `2.2.x`
+Work with composer version `2.7.x`
 
 
 ## Usage
