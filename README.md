@@ -5,6 +5,7 @@ FUSEBOXY INSTALLER (1.x)
 
 Work with composer version `2.2.x`
 
+------------------------------------------------------------------
 
 ## Usage
 
