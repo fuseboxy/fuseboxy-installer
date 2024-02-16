@@ -1,5 +1,10 @@
-FUSEBOXY INSTALLER (2.2.x)
-==========================
+FUSEBOXY INSTALLER (1.x)
+========================
+
+## Dependency
+
+Work with composer version `2.2.x`
+
 
 ## Usage
 
@@ -19,7 +24,3 @@ Custom Installer for Composer Installation
 *  fuseboxy-layout
    *  layout.settings.php
 
-
-## Dependency
-
-Work with composer version `2.2.x`
