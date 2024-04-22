@@ -9,21 +9,23 @@ use Composer\Repository\InstalledRepositoryInterface;
 class Installer extends LibraryInstaller {
 
 
-	// list of files to copy after install (only)
+	// determine whether this installer is invoked by unit test
+	public static $isUnitTest = false;
+
+
+	// after install (but not update)
+	// ===> copy following files from vendor directory to app directory
 	private static $file2copy = array(
-		'fuseboxy/fuseboxy-auth' => [
-			'app/view/auth/layout.settings.php-default' => 'app/view/auth/layout.settings.php',
-		],
 		'fuseboxy/fuseboxy-core' => [
 			'app/config/fusebox_config.php',
 			'app/controller/error_controller.php',
 			'app/controller/home_controller.php',
 			'.htaccess',
-			'./././_env.php' => '_env.php.EMPTY',
-			'././_env.php' => '_env.php.UAT',
-			'./_env.php' => '_env.php.PRD',
 			'_env.php',
 			'index.php',
+		],
+		'fuseboxy/fuseboxy-auth' => [
+			'app/view/auth/layout.settings.php-default' => 'app/view/auth/layout.settings.php',
 		],
 		'fuseboxy/fuseboxy-layout' => [
 			'app/view/global/layout.settings.php-default' => 'app/view/global/layout.settings.php',
@@ -31,7 +33,8 @@ class Installer extends LibraryInstaller {
 	);
 
 
-	// list of files to remove after install or update
+	// after install or update
+	// ===> remove following files from vendor directory
 	private static $file2remove = array(
 		'fuseboxy/fuseboxy-core' => [
 			'app/config/fusebox_config.php',
@@ -44,20 +47,8 @@ class Installer extends LibraryInstaller {
 	);
 
 
-	// check whether this installer is invoked by unit test
-	private function isUnitTest() {
-		// parse composer file
-		$filePath = dirname($this->vendorDir).'/composer.json';
-		$json = json_decode(file_get_contents($filePath), true);
-		if ( $json === false ) return false;
-		// extract package name
-		$packageName = isset($json['name']) ? $json['name'] : '';
-		// done!
-		return ( $packageName == 'fuseboxy/fuseboxy-autotest' );
-	}
-
-
-	// check whether to run this installer (according to package type)
+	// check package type
+	// ===> determine whether to install the package by this installer
 	public function supports($packageType) {
 		return in_array($packageType, ['fuseboxy-core', 'fuseboxy-module']);
 	}
@@ -68,9 +59,7 @@ class Installer extends LibraryInstaller {
 		$baseDir = dirname($this->vendorDir).'/';
 		$packageDir = $this->vendorDir.'/'.$packageName.'/';
 		// obtain file list
-		if ( isset(self::$file2copy['*']) ) $file2copy = self::$file2copy['*'];
-		elseif ( isset(self::$file2copy[$packageName]) ) $file2copy = self::$file2copy[$packageName];
-		else $file2copy = [];
+		$file2copy = self::$file2copy['*'] ?? self::$file2copy[$packageName] ?? [];
 		// go through each specified file
 		foreach ( $file2copy as $src => $dst ) {
 			if ( is_numeric($src) ) $src = $dst;
@@ -92,9 +81,7 @@ class Installer extends LibraryInstaller {
 		$baseDir = dirname($this->vendorDir).'/';
 		$packageDir = $this->vendorDir.'/'.$packageName.'/';
 		// obtain file list
-		if ( isset(self::$file2remove['*']) ) $file2remove = self::$file2remove['*'];
-		elseif ( isset(self::$file2remove[$packageName]) ) $file2remove = self::$file2remove[$packageName];
-		else $file2remove = [];
+		$file2remove = self::$file2remove['*'] ?? self::$file2remove[$packageName] ?? [];
 		// go through each specified file
 		foreach ( $file2remove as $file ) {
 			// remove specified file
@@ -111,13 +98,13 @@ class Installer extends LibraryInstaller {
 		return true;
 	}
 
-
+/*
 	// perform default install-operation of composer
 	// ===> then perform custom install-operation of fuseboxy
 	public function install(InstalledRepositoryInterface $repo, PackageInterface $package) {
 		parent::install($repo, $package);
 		// simply quit when unit test
-		if ( $this->isUnitTest() ) return false;
+		if ( self::$isUnitTest ) return false;
 		// further adjust package location
 		$this->customCopyFile($package->getName());
 		$this->customRemoveFile($package->getName());
@@ -131,7 +118,7 @@ class Installer extends LibraryInstaller {
 	public function update(InstalledRepositoryInterface $repo, PackageInterface $initial, PackageInterface $target) {
 		parent::update($repo, $initial, $target);
 		// simply quit when unit test
-		if ( $this->isUnitTest() ) return false;
+		if ( self::$isUnitTest ) return false;
 		// further adjust package location
 		// ===> no need to copy file when package update
 		// ===> to avoid overwriting modified settings file
@@ -140,5 +127,5 @@ class Installer extends LibraryInstaller {
 		return true;
 	}
 
-
+*/
 } // class
