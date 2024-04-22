@@ -71,8 +71,6 @@ class Installer extends LibraryInstaller {
 			// ===> otherwise, modified config file or customized index will be overwritten everytime composer update is run...
 			if ( is_file($packageDir.$src) and !is_file($baseDir.$dst) ) copy($packageDir.$src, $baseDir.$dst);
 		}
-		// done!
-		return true;
 	}
 
 
@@ -94,38 +92,36 @@ class Installer extends LibraryInstaller {
 				$dir = dirname($dir);
 			}
 		}
-		// done!
-		return true;
 	}
 
-/*
+
 	// perform default install-operation of composer
 	// ===> then perform custom install-operation of fuseboxy
 	public function install(InstalledRepositoryInterface $repo, PackageInterface $package) {
-		parent::install($repo, $package);
+		$result = parent::install($repo, $package);
 		// simply quit when unit test
-		if ( self::$isUnitTest ) return false;
+		if ( self::$isUnitTest ) return $result;
 		// further adjust package location
 		$this->customCopyFile($package->getName());
 		$this->customRemoveFile($package->getName());
 		// done!
-		return true;
+		return $result;
 	}
 
-
+/*
 	// perform default update-operation of composer
 	// ===> then perform custom update-operation of fuseboxy
 	public function update(InstalledRepositoryInterface $repo, PackageInterface $initial, PackageInterface $target) {
-		parent::update($repo, $initial, $target);
+		$result = parent::update($repo, $initial, $target);
 		// simply quit when unit test
-		if ( self::$isUnitTest ) return false;
+		if ( self::$isUnitTest ) return $result;
 		// further adjust package location
 		// ===> no need to copy file when package update
 		// ===> to avoid overwriting modified settings file
 		$this->customRemoveFile($target->getName());
 		// done!
-		return true;
+		return $result;
 	}
-
 */
+
 } // class
