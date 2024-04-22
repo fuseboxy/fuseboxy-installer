@@ -108,7 +108,7 @@ class Installer extends LibraryInstaller {
 		return $result;
 	}
 
-/*
+
 	// perform default update-operation of composer
 	// ===> then perform custom update-operation of fuseboxy
 	public function update(InstalledRepositoryInterface $repo, PackageInterface $initial, PackageInterface $target) {
@@ -122,6 +122,6 @@ class Installer extends LibraryInstaller {
 		// done!
 		return $result;
 	}
-*/
+
 
 } // class
