@@ -96,6 +96,7 @@ class Installer extends LibraryInstaller {
 	public function install(InstalledRepositoryInterface $repo, PackageInterface $package) {
 		$result = parent::install($repo, $package);
 		// further adjust package location
+		// ===> e.g. copy default settings file to app directory
 		$this->customCopyFile($package->getName());
 		$this->customRemoveFile($package->getName());
 		// done!
