@@ -1,8 +1,8 @@
 {
 	"name": "fuseboxy/fuseboxy-installer",
-	"description": "Fuseboxy Custom Installer for Composer Installation",
-	"type": "composer-plugin",
+	"description": "Plugin which allows installing Fuseboxy core/module through Composer",
 	"license": "MIT",
+	"type": "composer-plugin",
 	"autoload": {
 		"psr-4": {"Fuseboxy\\Composer\\": "src/"}
 	},
@@ -11,8 +11,5 @@
 	},
 	"require": {
 		"composer-plugin-api": "2.6.*"
-	},
-	"require-dev": {
-		"composer/composer": "2.7.*"
 	}
 }
