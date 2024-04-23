@@ -9,10 +9,6 @@ use Composer\Repository\InstalledRepositoryInterface;
 class Installer extends LibraryInstaller {
 
 
-	// determine whether this installer is invoked by unit test
-	public static $isUnitTest = false;
-
-
 	// after install (but not update)
 	// ===> copy following files from vendor directory to app directory
 	private static $file2copy = array(
@@ -99,8 +95,6 @@ class Installer extends LibraryInstaller {
 	// ===> then perform custom install-operation of fuseboxy
 	public function install(InstalledRepositoryInterface $repo, PackageInterface $package) {
 		$result = parent::install($repo, $package);
-		// simply quit when unit test
-		if ( self::$isUnitTest ) return $result;
 		// further adjust package location
 		$this->customCopyFile($package->getName());
 		$this->customRemoveFile($package->getName());
@@ -113,8 +107,6 @@ class Installer extends LibraryInstaller {
 	// ===> then perform custom update-operation of fuseboxy
 	public function update(InstalledRepositoryInterface $repo, PackageInterface $initial, PackageInterface $target) {
 		$result = parent::update($repo, $initial, $target);
-		// simply quit when unit test
-		if ( self::$isUnitTest ) return $result;
 		// further adjust package location
 		// ===> no need to copy file when package update
 		// ===> to avoid overwriting modified settings file
